@@ -1,0 +1,282 @@
+*{
+  margin: none;
+  padding: none;
+}
+body{
+  display: flex;
+  justify-content: center;
+  color: #fff;
+  background: #444;
+  text-align: center;
+  font-family: fantasy;
+}
+input{
+  outline: none;
+}
+#background{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+}
+#trans{
+  z-index: 3;
+  position: fixed;
+  top: 0;
+  left: -101vw;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+}
+#menu{
+  flex: 1;
+  z-index: 3;
+  position: fixed;
+  top: 1vw;
+  right: 1vw;
+  display: none;
+  flex-direction: column;
+  text-align: left;
+  padding: 5vw;
+  border-radius: 3%;
+  color: #000;
+  background: #fff;
+  transition: width 2s ease-in;
+}
+#menu div{
+  padding: 2vw 0;
+}
+#menu p{
+  color: #c44;
+  margin: none;
+  padding: 2vw 0;
+}
+#confirmBox{
+  z-index: 4;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 40vw;
+  max-width: 60vw;
+  font-size: 5vw;
+  padding: 5vw;
+  border-radius: 10%;
+  color: #000;
+  background: #fff;
+}
+#confirmBox p:first-child{
+  text-align: left;
+}
+#confirmBtns{
+  user-select: none;
+}
+#confirmBtns p:active{
+  transform: scale(0.7);
+}
+nav{
+  z-index: 2;
+  position: fixed;
+  top: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  height: 25vw;
+  background: #333;
+}
+#navBtn1, #navBtn2{
+  flex: 1;
+  /*background: #00f;*/
+}
+#navBtn1{
+  display: none;
+}
+#navBtn2 svg:nth-child(2){
+  display: none;
+}
+#navTxt{
+  font-family: Sans-Serif;
+  font-size: 10vw;
+  flex: 2;
+  /*background: #fff;*/
+}
+main{
+  margin-top: 25vw;
+}
+#read{
+  display: none;
+}
+#read p{
+  width: 100vw;
+  display: block;
+  text-align: justify;
+  white-space: pre-wrap;
+}
+/*#read div{
+  position: fixed;
+  bottom: 4vh;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+}*/
+#read img:first-of-type{
+  position: fixed;
+  bottom: 4vh;
+  left: 2vw;
+}
+#read img:last-child{
+  position: fixed;
+  bottom: 4vh;
+  right: 2vw;
+}
+#edit{
+  /*position: absolute;
+  top: 25vw;
+  left: 0;*/
+  width: 100vw;
+  height: auto;
+  display: none;
+  /*background: #fef;*/
+}
+#edit textarea{
+  /*position: fixed;
+  bottom: 10vh;
+  left: 0;*/
+  z-index: 1;
+  margin-bottom: 12vw;
+  font-size: 7vw;
+  font-family: serif;
+  word-spacing: .2em;
+  line-height: 1.5em;
+  outline: none;
+  border: none;
+  width: 100vw;
+  height: auto;
+  background: #fff;
+}
+#category{
+  z-index: 3;
+  font-size: 4vw;
+  position: fixed;
+  left: 2vw;
+  bottom: 2vh;
+  width: 40vw;
+  height: 10vw;
+  border-radius: 3%;
+  background: #444;
+  overflow: hidden;
+}
+.category{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.category svg{
+  width: 10vw;
+  height: 10vw;
+  flex: 1;
+  margin-left: 2vw;
+}
+.category p{
+  flex: 5;
+  text-align: left;
+  margin-left: 2vw;
+}
+.others{
+  display: none;
+  background: #444;
+}
+#addCategory{
+  font-size: 15vw;
+}
+#deleteEdit{
+  position: fixed;
+  bottom: 2vh;
+  right: 2vw;
+  padding: 1vw;
+  border-radius: 50%;
+  /*background: #f00;*/
+}
+#notes{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.aNote{
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 80vw;
+  border: 2px solid #fff;
+  padding: 5vw 5vw 5vw 0;
+  margin: 3vh 0;
+}
+.categoryColor{
+  flex: 1;
+  width: 3vw;
+  height: 20vw;
+  margin: 0;
+  color: #409f93;
+  background: #409f93;
+}
+.container{
+  flex: 9;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 77vw;
+  padding-top: 7vw;
+}
+.container p{
+  justify-content: none;
+  align-items: none;
+  padding: auto;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  flex: 9;
+  margin: 0 2vw;
+  width: 70vw;
+  height: 1em;
+}
+.container img{
+  flex: 1;
+  padding: 3vw;
+}
+.delete{
+  width: 10vw;
+}
+.editPen{
+  width: 10vw;
+}
+.time{
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 4vw;
+  font-family: serif;
+  letter-spacing: 0.1vw;
+}
+#addBtn{
+  color: #fff;
+  position: absolute;
+  right: 1px;
+  bottom: 5vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 15vw;
+  width: 20vw;
+  height: 20vw;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  
+}
