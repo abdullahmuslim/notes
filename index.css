@@ -76,6 +76,9 @@ input{
 #confirmBtns p:active{
   transform: scale(0.7);
 }
+.clickables:active{
+  transform: scale(0.7);
+}
 nav{
   z-index: 2;
   position: fixed;

@@ -12,10 +12,10 @@
   <div onclick="canc();closeCategory();cancAddCategory();cancBox();" id="trans"></div>
   <div id="background" name="background" onclick="autoFocus()"></div>
   <div id="menu">
-    <p onclick="deleteAll()">Delete all</p>
-    <div>Sort by Category</div>
-    <div>Sort by Size</div>
-    <div>Sort by Time</div>
+    <p class="clickables" onclick="deleteAll()">Delete all</p>
+    <div class="clickables">Sort by Category</div>
+    <div class="clickables">Sort by Size</div>
+    <div class="clickables">Sort by Time</div>
   </div>
   <nav>
     <div id="navBtn1">
@@ -31,12 +31,12 @@
     </div>
     <p id="navTxt">Notes</p>
     <div id="navBtn2">
-      <svg role="toggle menu" title="toggle menu" onclick="menu()" viewBox="0 0 60 60">
+      <svg class="clickables" role="toggle menu" title="toggle menu" onclick="menu()" viewBox="0 0 60 60">
         <line x1="45" y1="20" x2="45" y2="20" style="stroke: #fff; stroke-width: 7; stroke-linecap: round;"/>
         <line x1="45" y1="30" x2="45" y2="30" style="stroke: #fff; stroke-width: 7; stroke-linecap: round;"/>
         <line x1="45" y1="40" x2="45" y2="40" style="stroke: #fff; stroke-width: 7; stroke-linecap: round;"/>
       </svg>
-      <svg onclick="save()" viewBox="0 0 100 100">
+      <svg class="clickables" onclick="save()" viewBox="0 0 100 100">
         <line x1="37.5" y1="60" x2="52.5" y2="75" style="stroke: #fff; stroke-width: 7; stroke-linecap: square;"/>
         <line x1="52.5" y1="75" x2="82.5" y2="45" style="stroke: #fff; stroke-width: 7; stroke-linecap: square;"/>
       </svg>
@@ -45,13 +45,13 @@
   <main>
     <div id="read">
       <p></p>
-      <img onclick="editOld(event)" class="editPen" src="edit.png" alt="edit"/>
-      <img onclick="deleteNote(event)" class="delete" src="delete.png" alt="delete"/>
+      <img onclick="editOld(event)" class="clickables editPen" src="edit.png" alt="edit"/>
+      <img onclick="deleteNote(event)" class="clickables delete" src="delete.png" alt="delete"/>
     </div>
     <div id="edit">
       <textarea id="textarea"></textarea>
       <div id="category" onclick="openCategory()">
-        <div class="category others" onclick="changeCategory(event)">
+        <div class="clickables category others" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
             <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
             <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
@@ -59,7 +59,7 @@
           </svg>
           <p class="child">Work</p>
         </div>
-        <div class="category others" onclick="changeCategory(event)">
+        <div class="clickables category others" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
             <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
             <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
@@ -67,7 +67,7 @@
           </svg>
           <p class="child">Study</p>
         </div>
-        <div class="category current" onclick="changeCategory(event)">
+        <div class="clickables category current" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
             <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
             <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
@@ -77,7 +77,7 @@
         </div>
         <div onclick="addCategory()" id="addCategory">+</div>
       </div>
-      <div id="deleteEdit" onclick="deleteNote(event)">
+      <div class="clickables" id="deleteEdit" onclick="deleteNote(event)">
         <img alt="delete" class="delete" src="delete.png"/>
       </div>
     </div>
@@ -86,13 +86,13 @@
         <div class="categoryColor">&nbsp;</div>
         <div class="container">
           <p infos='{"category":"Uncategorized","time":6201678,"length":30,"use12Hours":true, "new":false,"pos":0}' onclick="read(event)">A lot of noise won't fix the shit we've got here</p>
-          <img onclick="editOld(event)" alt="edit" src="edit.png" class="editPen">
-          <img onclick="deleteNote(event)" class="delete" src="delete.png" alt="delete" />
+          <img onclick="editOld(event)" alt="edit" src="edit.png" class="clickables editPen">
+          <img onclick="deleteNote(event)" class="clickables delete" src="delete.png" alt="delete" />
         </div>
         <div class="time">Aug 3, 2022 3:45 AM</div>
       </div>
     </div>
-    <div title="add button" onclick="add()" id="addBtn">+</div>
+    <div class="clickables" title="add button" onclick="add()" id="addBtn">+</div>
   </main>
   <script src="index.js"></script>
 </body>

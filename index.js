@@ -227,9 +227,9 @@ function changeCategory(event){
   let element = target.children[1];
   let selected = element.textContent;
   let textarea = document.getElementById("textarea");
-  let infos = JSON.parse(textarea.infos);
+  let infos = JSON.parse(textarea.getAttributeNode("infos").value);
   infos.category = selected;
-  textarea.infos = JSON.stringify(infos);
+  textarea.setAttribute("infos", JSON.stringify(infos));
 }
 function addCategory(){
   console.log('yey')
@@ -268,7 +268,7 @@ function confirmNewCategory(){
   let newCategoryDef = document.getElementById("newCategory")
   let newCategoryName = newCategoryDef.value;
   let newCategory = document.createElement("div");
-  newCategory.className = "category others";
+  newCategory.className = "clickables category others";
   newCategory.onclick = function(){
     changeCategory(event);
   };
@@ -328,10 +328,10 @@ function save(){
     edit.addEventListener("click", editOld);
     edit.alt = "edit";
     edit.src = "edit.png";
-    edit.className = "editPen";
+    edit.className = "clickables editPen";
     container.appendChild(edit)
     let deleteNoteImg = document.createElement("img");
-    deleteNoteImg.className = "delete";
+    deleteNoteImg.className = "clickables delete";
     deleteNoteImg.src = "delete.png";
     deleteNoteImg.alt = "delete";
     deleteNoteImg.onclick = function(){
@@ -374,6 +374,7 @@ function save(){
     p.setAttribute("infos", JSON.stringify(infos));
   }
   //console.log(note)
+  changeCategoryColor();
   cancEdit();
 }
 
@@ -451,3 +452,38 @@ function reArrangePos(){
     }
   }
 }
+function generateColor(string){
+  let finalString = "";
+  for (let i = 0;i < string.length;i++){
+    if(!Number(string.charAt(i))){
+      finalString += string.charCodeAt(i);
+    }else{
+      finalString += string.charAt(i);
+    }
+  }
+  if (finalString.length < 7){
+    finalString += "123";
+  }
+  finalString = Number(finalString).toString(16).substr(0,6);
+  return "#"+finalString;
+}
+function changeCategoryColor(){
+  let notes = document.getElementById("notes");
+  if(notes.children.length > 0){
+    for (let i = 0; i < notes.children.length; i++){
+      let aNote = notes.children[i];
+      let p = aNote.children[1].children[0];
+      let infos = JSON.parse(p.getAttributeNode("infos").value);
+      let category = infos.category;
+      console.log("cat",category)
+      let categoryColor = aNote.children[0];
+      categoryColor.style.color = generateColor(category);
+      categoryColor.style.background = generateColor(category);
+    }
+  }
+}
+changeCategoryColor();
+
+/*let r = (Math.random() + 1).toString(16).substring(7);
+r = ("finalString".charCodeAt(1))//. toString(16);
+console.log("random", r);*/
