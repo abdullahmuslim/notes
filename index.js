@@ -27,11 +27,16 @@ function deleteNote(event){
   if(event.target.parentElement.id == "deleteEdit"){
     p = event.target.parentElement.parentElement.firstElementChild;
   }
-  console.log(p.getAttributeNode("infos"))
-  let pos = JSON.parse(p.getAttributeNode("infos").value).pos;
-  console.log(pos)
-  let confirmBox = new ConfirmBox("Action is irreversible.");
-  confirmBox.create("DELETENOTE("+pos+")");
+  console.log(p.getAttributeNode("infos"));
+  if(JSON.parse(p.getAttributeNode("infos").value).pos){
+    let pos = JSON.parse(p.getAttributeNode("infos").value).pos;
+    console.log(pos)
+    let confirmBox = new ConfirmBox("Action is irreversible.");
+    confirmBox.create("DELETENOTE("+pos+")");
+  }else{
+    let confirmBox = new ConfirmBox("Note have not been saved.");
+    confirmBox.create("cancBox()");
+  }
 }
 function DELETENOTE(pos){
   cancEdit();
