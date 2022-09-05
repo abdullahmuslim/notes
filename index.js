@@ -459,4 +459,4 @@ function changeCategoryColor(){
 changeCategoryColor();
 
 /*let r = (Math.random() + 1).toString(16).substring(7);
-r = ("finalString".charCodeAt(1))//. toString(16);
+r = ("finalString".charCodeAt(1))//. toString(16);*/
