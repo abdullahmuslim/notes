@@ -22,15 +22,12 @@ function DELETEALL(){
   cancBox();
 }
 function deleteNote(event){
-  console.log("parent",event.target.parentElement.parentElement.firstElementChild)
   let p = event.target.parentElement.firstElementChild;
   if(event.target.parentElement.id == "deleteEdit"){
     p = event.target.parentElement.parentElement.firstElementChild;
   }
-  console.log(p.getAttributeNode("infos"));
-  if(JSON.parse(p.getAttributeNode("infos").value).pos){
+  if(JSON.parse(p.getAttributeNode("infos").value).pos || JSON.parse(p.getAttributeNode("infos").value).pos == 0){
     let pos = JSON.parse(p.getAttributeNode("infos").value).pos;
-    console.log(pos)
     let confirmBox = new ConfirmBox("Action is irreversible.");
     confirmBox.create("DELETENOTE("+pos+")");
   }else{
@@ -65,13 +62,8 @@ function read(event){
   let read = document.getElementById("read");
   read.style.display = "block";
   read = read.children[0];
-  //event.target = this;
-  console.log('Reading')
   read.setAttribute("infos", event.target.getAttributeNode("infos").value);
-  console.log(read)
   read.textContent = event.target.textContent;
-  //console.log(event.target.parentElement.parentElement.getAttributeNode("infos").value)
-  //console.log(read.infos)
 }
 function back(){
   let addBtn = document.getElementById("addBtn");
@@ -96,10 +88,8 @@ function editOld(event){
   document.getElementById("read").style.display = "none";
   let textarea = document.getElementById("textarea");
   textarea.value = event.target.previousElementSibling.innerHTML;
-  console.log(event.target.previousElementSibling.getAttributeNode("infos").value)
   textarea.setAttribute("infos",event.target.previousElementSibling.getAttributeNode("infos").value);
   //textarea.infos = JSON.stringify(event.target.getAttributeNode("infos").value);
-  //console.log(textarea.infos)
   document.body.style.background = "#fff";
   let addBtn = document.getElementById("addBtn");
   addBtn.style.display = "none";
@@ -196,15 +186,12 @@ function autoResize() {
   this.style.height = 'auto';
   this.style.height = this.scrollHeight + 'px';
   window.scrollTo(0, this.scrollHeight);
-  console.log(this.infos)
 }
 function autoFocus(){
   let navTxt = document.getElementById("navTxt");
   let textarea = document.getElementById("textarea");
-  console.log("nodeName",document.activeElement.nodeName);
   if(navTxt.textContent == "Editing" && document.activeElement.nodeName != "TEXTAREA"){
     textarea.focus();
-    console.log(document.activeElement.nodeName)
   }
 }
 function changeCategory(event){
@@ -217,9 +204,7 @@ function changeCategory(event){
     category[i].style.background = "#444";
   }
   let target = event.target;
-  console.log("outer", target)
   if(target.classList.contains("child")){
-    console.log(target);
     target = target.parentElement;
   }
   target.classList.add("current");
@@ -232,7 +217,6 @@ function changeCategory(event){
   textarea.setAttribute("infos", JSON.stringify(infos));
 }
 function addCategory(){
-  console.log('yey')
   let parent = document.getElementById("category");
   let addCategory = document.getElementById("addCategory");
   let newCategory = document.createElement("input");
@@ -247,7 +231,6 @@ function addCategory(){
   //newCategory.addEventListener("click", );
   parent.replaceChild(newCategory, addCategory);
   newCategory.focus();
-  console.log(parent.children[3])
   //addCategory.innerHTML = '"<input type="text" max="13"/>';
 }
 function cancAddCategory(){
@@ -259,7 +242,6 @@ function cancAddCategory(){
   add.id = "addCategory";
   add.fontSize = "15vw";
   add.textContent = "+";
-  console.log(parent.lastElementChild, add)
   parent.replaceChild(add, parent.lastElementChild);
   parent.appendChild(add);
 }
@@ -318,7 +300,6 @@ function save(){
     let p = document.createElement("p");
     p.setAttribute("infos", JSON.stringify(infos));
     p.addEventListener("click", read);
-    //console.log(p.getAttributeNode("infos").value)
     p.innerHTML = note;
     container.appendChild(p);
     let edit = document.createElement("img");
@@ -337,7 +318,6 @@ function save(){
     deleteNoteImg.onclick = function(){
       deleteNote(event);
     }
-    console.log(deleteNoteImg)
     container.appendChild(deleteNoteImg);
     let time = document.createElement("div");
     let timeString = "";
@@ -355,7 +335,6 @@ function save(){
     aNote.appendChild(time);
     notes.appendChild(aNote);
   }else{
-    console.log(infos.pos)
     let pos = infos.pos;
     let aNote = notes.children[pos];
     let time = aNote.children[2];
@@ -373,7 +352,6 @@ function save(){
     p.textContent = textarea.value;
     p.setAttribute("infos", JSON.stringify(infos));
   }
-  //console.log(note)
   changeCategoryColor();
   cancEdit();
 }
@@ -385,7 +363,6 @@ window.onload = function(){
   textarea.addEventListener("unfocus", positionCategory);*/
 }
 
-//console.log(value.category)
 function ConfirmBox(message){
   this.message = message;
   this.create = function(callback){
@@ -440,7 +417,6 @@ function cancBox(){
 }
 function reArrangePos(){
   let notes = document.getElementById("notes");
-  console.log(notes.children.length)
   if(notes.children.length > 0){
     for (let i = 0; i < notes.children.length; i++){
       let aNote = notes.children[i];
@@ -448,7 +424,6 @@ function reArrangePos(){
       let infos = JSON.parse(p.getAttributeNode("infos").value);
       infos.pos = i;
       p.setAttribute("infos", JSON.stringify(infos));
-      console.log("p",p)
     }
   }
 }
@@ -475,7 +450,6 @@ function changeCategoryColor(){
       let p = aNote.children[1].children[0];
       let infos = JSON.parse(p.getAttributeNode("infos").value);
       let category = infos.category;
-      console.log("cat",category)
       let categoryColor = aNote.children[0];
       categoryColor.style.color = generateColor(category);
       categoryColor.style.background = generateColor(category);
@@ -486,4 +460,3 @@ changeCategoryColor();
 
 /*let r = (Math.random() + 1).toString(16).substring(7);
 r = ("finalString".charCodeAt(1))//. toString(16);
-console.log("random", r);*/
