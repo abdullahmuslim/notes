@@ -291,6 +291,7 @@ function save(){
     let pos = notes.childElementCount;
     infos.pos = pos;
     let aNote = document.createElement("div");
+    aNote.id = "note"+pos;
     aNote.className = "aNote";
     let categoryColor = document.createElement("div");
     categoryColor.className = "categoryColor";
@@ -337,6 +338,7 @@ function save(){
   }else{
     let pos = infos.pos;
     let aNote = notes.children[pos];
+    aNote.id = "note"+pos;
     let time = aNote.children[2];
     let timeString = "";
     timeString += months[date.getMonth()];
@@ -420,6 +422,7 @@ function reArrangePos(){
   if(notes.children.length > 0){
     for (let i = 0; i < notes.children.length; i++){
       let aNote = notes.children[i];
+      aNote.id = "note"+i;
       let p = aNote.children[1].children[0];
       let infos = JSON.parse(p.getAttributeNode("infos").value);
       infos.pos = i;
@@ -456,6 +459,53 @@ function changeCategoryColor(){
     }
   }
 }
+
+function sortBySize(){
+  let notes = document.getElementById("notes");
+  let lengths = {};
+  for(let i = 0;i < notes.children.length; i++){
+    let aNote = notes.children[i];
+    aNoteId = aNote.id;
+    let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value)
+    let length = infos.length;
+    lengths[length] = aNoteId;
+  }
+  let counter = 0;
+  for(length in lengths){
+    if(counter <= notes.children.length){
+      if(document.getElementById(lengths[length]) != notes.children[counter + 1]){
+        console.log('wrkng')
+        notes.insertBefore(document.getElementById(lengths[length]), notes.children[counter]);
+      }
+    }
+    counter++;
+  }
+  reArrangePos();
+}
+
+function sortByTime(){
+  let notes = document.getElementById("notes");
+  let times = {};
+  for(let i = 0;i < notes.children.length; i++){
+    let aNote = notes.children[i];
+    aNoteId = aNote.id;
+    let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value)
+    let time = infos.time;
+    times[time] = aNoteId;
+  }
+  console.log(JSON.stringify(times))
+  let counter = 0;
+  for(time in times){
+    if(counter <= notes.children.length){
+      if(document.getElementById(times[time]) != notes.children[counter + 1]){
+        notes.insertBefore(document.getElementById(times[time]), notes.children[counter]);
+      }
+    }
+    counter++;
+  }
+  reArrangePos();
+}
+
 changeCategoryColor();
 
 /*let r = (Math.random() + 1).toString(16).substring(7);

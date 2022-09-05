@@ -208,6 +208,7 @@ main{
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 20vw;
 }
 .aNote{
   position: relative;
@@ -269,7 +270,7 @@ main{
 }
 #addBtn{
   color: #fff;
-  position: absolute;
+  position: fixed;
   right: 1px;
   bottom: 5vh;
   display: flex;
