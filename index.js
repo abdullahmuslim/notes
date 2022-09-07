@@ -275,6 +275,9 @@ function confirmNewCategory(){
   newCategory.appendChild(p);
   parent.insertBefore(newCategory, newCategoryDef);
   cancAddCategory();
+  // force categories update
+  closeCategory();
+  openCategory();
 }
 function save(){
   let months = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -361,8 +364,6 @@ function save(){
 window.onload = function(){
   let textarea = document.getElementById("textarea");
   textarea.addEventListener("input", autoResize);
-  /*textarea.addEventListener("focus", positionCategory);
-  textarea.addEventListener("unfocus", positionCategory);*/
 }
 
 function ConfirmBox(message){
@@ -381,23 +382,10 @@ function ConfirmBox(message){
     div = document.getElementById("confirmBox");
     let height = document.body.scrollHeight;
     let divHeight = window.getComputedStyle(div).getPropertyValue("height");
-    /*let width = document.body.scrollWidth;
-    let divWidth = window.getComputedStyle(div).getPropertyValue("width");*/
     // define styles for confirmBox.
     div.style.zIndex = 4;
     div.style.position = "fixed";
     div.style.top = `${(height - div.offsetHeight) / 2}px`;
-    /*div.style.left = `${(width - Number(divWidth.replace(/px/g, ""))) / 2}px`;
-    div.style.display = "flex";
-    div.style.flexDirection = "column";
-    div.style.justifyContent = "center";
-    div.style.maxWidth = "60vw";
-    div.style.color = "#000";
-    div.style.fontSize = "5vw";
-    div.style.background = "#fff";
-    div.style.padding = "5vw";
-    div.style.borderRadius = "10%";
-    div.children[0].style.alignItems = "none";*/
     let buttons = document.getElementById("confirmBtns");
     buttons.style.marginTop = "3vw";
     buttons.style.display = "flex";
@@ -410,12 +398,14 @@ function ConfirmBox(message){
     buttons[1].style.padding = "3vw";
     buttons[1].style.background = "#5e5";
     buttons[1].style.borderRadius = "10%";
+    document.body.addEventListener("click", cancBox);
   }
 }
 function cancBox(){
   let confirmBox = document.getElementById("confirmBox");
   confirmBox.parentElement.removeChild(confirmBox);
   document.getElementById("trans").style.left = "101vw";
+  document.removeEventListener("click", cancBox);
 }
 function reArrangePos(){
   let notes = document.getElementById("notes");
@@ -445,6 +435,7 @@ function generateColor(string){
   finalString = Number(finalString).toString(16).substr(0,6);
   return "#"+finalString;
 }
+
 function changeCategoryColor(){
   let notes = document.getElementById("notes");
   if(notes.children.length > 0){
@@ -470,16 +461,22 @@ function sortBySize(){
     let length = infos.length;
     lengths[length] = aNoteId;
   }
+  console.log(JSON.stringify(lengths))
   let counter = 0;
   for(length in lengths){
     if(counter <= notes.children.length){
-      if(document.getElementById(lengths[length]) != notes.children[counter + 1]){
-        console.log('wrkng')
+      if(document.getElementById(lengths[length]) != notes.children[counter]){
+        console.log(lengths[length])
         notes.insertBefore(document.getElementById(lengths[length]), notes.children[counter]);
       }
     }
     counter++;
   }
+  let message = document.getElementById("message");
+  message.style.animation = "showMessage 2s linear";
+  setTimeout(function() {
+    message.style.animation = "";
+  }, 2000);
   reArrangePos();
 }
 
@@ -497,12 +494,59 @@ function sortByTime(){
   let counter = 0;
   for(time in times){
     if(counter <= notes.children.length){
-      if(document.getElementById(times[time]) != notes.children[counter + 1]){
+      if(document.getElementById(times[time]) != notes.children[counter]){
+        console.log(times[time])
         notes.insertBefore(document.getElementById(times[time]), notes.children[counter]);
       }
     }
     counter++;
   }
+  let message = document.getElementById("message");
+  message.style.animation = "showMessage 2s linear";
+  setTimeout(function() {
+    message.style.animation = "";
+  }, 2000);
+  reArrangePos();
+}
+
+function sortByCategory(){
+  let notes = document.getElementById("notes");
+  let categories = {};
+  for(let i = 0;i < notes.children.length; i++){
+    let aNote = notes.children[i];
+    aNoteId = aNote.id;
+    let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value);
+    let category = infos.category;
+    if(categories[category]){
+      //console.log(categories[category]categories[category.length])
+      categories[category][categories[category].length] = aNoteId;
+    }else{
+      categories[category] = [];
+      categories[category][0] = aNoteId;
+    }
+  }
+  console.log(JSON.stringify(categories))
+  let counter = 0;
+  let indices = 0;
+  for(category in categories){
+    categories[category].sort();
+    //debug position 
+    if(counter <= notes.children.length){
+      for (let i = 0;i < categories[category].length;i++){
+        if(document.getElementById(categories[category][i]) != notes.children[counter]){
+          console.log(categories[category][i])
+          notes.insertBefore(document.getElementById(categories[category][i]), notes.children[counter]);
+        }
+        counter++;
+      }
+    }
+  }
+  let message = document.getElementById("message");
+  message.style.animation = "showMessage 2s linear";
+  setTimeout(function() {
+    message.style.animation = "";
+  }, 2000);
+  reArrangePos();
   reArrangePos();
 }
 
@@ -510,3 +554,4 @@ changeCategoryColor();
 
 /*let r = (Math.random() + 1).toString(16).substring(7);
 r = ("finalString".charCodeAt(1))//. toString(16);*/
+console.log('not here');

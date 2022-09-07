@@ -284,3 +284,26 @@ main{
   border-radius: 50%;
   
 }
+#message{
+  visibility: hidden;
+  color: #000;
+  background: #fff;
+  width: 40vw;
+  position: fixed;
+  bottom: 1px;
+  padding: 2vw;
+  border-radius: 1.5em;
+  font-size: 8vw;
+}
+@keyframes showMessage{
+  0%{
+    background: rgba(255,255,255,0.8);
+    color: #000;
+    visibility: visible;
+  }
+  100%{
+    background: transparent;
+    color: transparent;
+    visibility: hidden;
+  }
+}

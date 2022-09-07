@@ -9,11 +9,11 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <div onclick="canc();closeCategory();cancAddCategory();cancBox();" id="trans"></div>
+  <div onclick="canc();closeCategory();cancAddCategory();" id="trans"></div>
   <div id="background" name="background" onclick="autoFocus()"></div>
   <div id="menu">
     <p class="clickables" onclick="deleteAll()">Delete all</p>
-    <div class="clickables">Sort by Category</div>
+    <div onclick="sortByCategory()" class="clickables">Sort by Category</div>
     <div onclick="sortBySize()" class="clickables">Sort by Size</div>
     <div onclick="sortByTime()" class="clickables">Sort by Time</div>
   </div>
@@ -94,6 +94,7 @@
     </div>
     <div class="clickables" title="add button" onclick="add()" id="addBtn">+</div>
   </main>
+  <div id="message">sorted</div>
   <script src="index.js"></script>
 </body>
 </html>
