@@ -10,6 +10,25 @@ function canc(){
   menu.style.display = "none";
   trans.style.left = "-101vw";
 }
+var Oldpos = 160;
+function slideDelete(e){
+  if(event.isTrusted){
+    let touches = e.changedTouches;
+    touches = touches[0];
+    let newPos = touches.pageX;
+    let target = e.target;
+    if(newPos > Oldpos){
+      oldPos += newPos - oldPos;
+      target.style.left = oldPos+"px";
+    }else{
+      oldPos -= oldPos - newPos;
+      target.style.left = oldPos+"px";
+    }
+    oldPos = window.getComputedStyle(target).getPropertyValue("left");
+    oldPos = oldPos.replace("px", "");
+    oldPos = Number(oldPos);
+  }
+}
 function deleteAll(){
   canc();
   back();
@@ -225,13 +244,12 @@ function addCategory(){
   newCategory.maxlength = 13;
   newCategory.style.width = "100%";
   newCategory.style.height = "10vw";
-  newCategory.onchange = function(){
-    confirmNewCategory();
+  newCategory.onkeypress = function(){
+    confirmNewCategory(event);
   }
   //newCategory.addEventListener("click", );
   parent.replaceChild(newCategory, addCategory);
   newCategory.focus();
-  //addCategory.innerHTML = '"<input type="text" max="13"/>';
 }
 function cancAddCategory(){
   let parent = document.getElementById("category");
@@ -245,39 +263,42 @@ function cancAddCategory(){
   parent.replaceChild(add, parent.lastElementChild);
   parent.appendChild(add);
 }
-function confirmNewCategory(){
-  let parent = document.getElementById("category");
-  let newCategoryDef = document.getElementById("newCategory")
-  let newCategoryName = newCategoryDef.value;
-  let newCategory = document.createElement("div");
-  newCategory.className = "clickables category others";
-  newCategory.onclick = function(){
+function confirmNewCategory(e){
+  if(e.keyCode === 13){
+    e.preventDefault();
+    let parent = document.getElementById("category");
+    let newCategoryDef = document.getElementById("newCategory")
+    let newCategoryName = newCategoryDef.value;
+    let newCategory = document.createElement("div");
+    newCategory.className = "clickables category others";
+    newCategory.onclick = function(){
     changeCategory(event);
-  };
-  newCategory.innerHTML = `<svg class="child" viewBox="0 0 100 100">
-    <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
-    <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
-    <line x1="50" y1="80" x2="20" y2="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
-  </svg>`;
-  let p = document.createElement("p");
-  p.className = "child";
-  //change newCategoryName to title case.
-  let finalString = "";
-  for (let i = 0;i < newCategoryName.length; i++){
-    if(i == 0){
-      finalString += newCategoryName.charAt(0).toUpperCase();
-    }else{
-      finalString += newCategoryName.charAt(i).toLowerCase();
+    };
+      newCategory.innerHTML = `<svg class="child" viewBox="0 0 100 100">
+      <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="50" y1="80" x2="20" y2 ="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
+    </svg>`;
+    let p = document.createElement("p");
+    p.className = "child";
+    //change newCategoryName to title case.
+    let finalString = "";
+    for (let i = 0;i < newCategoryName.length; i++){
+      if(i == 0){
+        finalString += newCategoryName.charAt(0).toUpperCase();
+      }else{
+        finalString += newCategoryName.charAt(i).toLowerCase();
+      }
     }
-  }
-  newCategoryName = finalString;
-  p.textContent = newCategoryName;
-  newCategory.appendChild(p);
-  parent.insertBefore(newCategory, newCategoryDef);
-  cancAddCategory();
+    newCategoryName = finalString;
+    p.textContent = newCategoryName;
+    newCategory.appendChild(p);
+    parent.insertBefore(newCategory, newCategoryDef);
+    cancAddCategory();
   // force categories update
-  closeCategory();
-  openCategory();
+    closeCategory();
+    openCategory();
+  }
 }
 function save(){
   let months = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
@@ -382,10 +403,23 @@ function ConfirmBox(message){
     div = document.getElementById("confirmBox");
     let height = document.body.scrollHeight;
     let divHeight = window.getComputedStyle(div).getPropertyValue("height");
+    /*let width = document.body.scrollWidth;
+    let divWidth = window.getComputedStyle(div).getPropertyValue("width");*/
     // define styles for confirmBox.
     div.style.zIndex = 4;
     div.style.position = "fixed";
     div.style.top = `${(height - div.offsetHeight) / 2}px`;
+    /*div.style.left = `${(width - Number(divWidth.replace(/px/g, ""))) / 2}px`;
+    div.style.display = "flex";
+    div.style.flexDirection = "column";
+    div.style.justifyContent = "center";
+    div.style.maxWidth = "60vw";
+    div.style.color = "#000";
+    div.style.fontSize = "5vw";
+    div.style.background = "#fff";
+    div.style.padding = "5vw";
+    div.style.borderRadius = "10%";
+    div.children[0].style.alignItems = "none";*/
     let buttons = document.getElementById("confirmBtns");
     buttons.style.marginTop = "3vw";
     buttons.style.display = "flex";
@@ -398,14 +432,14 @@ function ConfirmBox(message){
     buttons[1].style.padding = "3vw";
     buttons[1].style.background = "#5e5";
     buttons[1].style.borderRadius = "10%";
-    document.body.addEventListener("click", cancBox);
+    document.getElementById("trans").addEventListener("click", cancBox);
   }
 }
-function cancBox(){
+function cancBox(e){
   let confirmBox = document.getElementById("confirmBox");
   confirmBox.parentElement.removeChild(confirmBox);
   document.getElementById("trans").style.left = "101vw";
-  document.removeEventListener("click", cancBox);
+  document.getElementById("trans").removeEventListener("click", cancBox);
 }
 function reArrangePos(){
   let notes = document.getElementById("notes");
@@ -461,7 +495,6 @@ function sortBySize(){
     let length = infos.length;
     lengths[length] = aNoteId;
   }
-  console.log(JSON.stringify(lengths))
   let counter = 0;
   for(length in lengths){
     if(counter <= notes.children.length){
@@ -525,7 +558,6 @@ function sortByCategory(){
       categories[category][0] = aNoteId;
     }
   }
-  console.log(JSON.stringify(categories))
   let counter = 0;
   let indices = 0;
   for(category in categories){
@@ -534,7 +566,6 @@ function sortByCategory(){
     if(counter <= notes.children.length){
       for (let i = 0;i < categories[category].length;i++){
         if(document.getElementById(categories[category][i]) != notes.children[counter]){
-          console.log(categories[category][i])
           notes.insertBefore(document.getElementById(categories[category][i]), notes.children[counter]);
         }
         counter++;
@@ -554,4 +585,3 @@ changeCategoryColor();
 
 /*let r = (Math.random() + 1).toString(16).substring(7);
 r = ("finalString".charCodeAt(1))//. toString(16);*/
-console.log('not here');
