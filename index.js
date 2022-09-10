@@ -1,3 +1,9 @@
+//get viewport width
+let viewportWidth = window.innerWidth;
+let maxX = (viewportWidth / 4);
+let minX = maxX * -1;
+let oldPos = 0;
+
 function menu(){
   let menu = document.getElementById("menu");
   let trans = document.getElementById("trans");
@@ -10,23 +16,75 @@ function canc(){
   menu.style.display = "none";
   trans.style.left = "-101vw";
 }
-var Oldpos = 160;
+
 function slideDelete(e){
-  if(event.isTrusted){
+  if(oldPos !== 0){
+    if(event.isTrusted){
+      let touches = e.changedTouches;
+      touches = touches[0];
+      let newPos = touches.pageX;
+      let target = e.currentTarget;
+      let prevPos = window.getComputedStyle(target).getPropertyValue("left");
+      prevPos = Number(prevPos.replace("px", ""));
+      let movement = (newPos - oldPos);
+      if (movement > maxX || movement < (maxX)*-1){
+        target.style.left = `${prevPos + movement}px`;
+        target.style.background = "#f66";3
+        oldPos += movement;
+      }
+    }
+  }
+  else{
     let touches = e.changedTouches;
     touches = touches[0];
     let newPos = touches.pageX;
-    let target = e.target;
-    if(newPos > Oldpos){
-      oldPos += newPos - oldPos;
-      target.style.left = oldPos+"px";
-    }else{
-      oldPos -= oldPos - newPos;
-      target.style.left = oldPos+"px";
-    }
-    oldPos = window.getComputedStyle(target).getPropertyValue("left");
-    oldPos = oldPos.replace("px", "");
-    oldPos = Number(oldPos);
+    oldPos = newPos;
+  }
+}
+function rePos(e){
+  let target = e.currentTarget;
+  let position = window.getComputedStyle(target).getPropertyValue("left");
+  position = position.replace("px", "");
+  position = Number(position);
+  target.style.left = "0";
+  target.style.background = "#444";
+  if(position < minX || position > maxX){
+    oldPos = 0;
+    gradualDelete(target);
+  }
+}
+function gradualDelete(target){
+  let height = window.getComputedStyle(target).getPropertyValue("height").replace("px", "")
+  parent = target.parentElement;
+  target.style.display = "none";
+  parent.style.height = height;
+  parent.style.width = "80vw";
+  parent.style.background = "#f66";
+  parent.style.justifyContent = "right";
+  parent.lastElementChild.textContent = "Undo";
+  parent.addEventListener("click", cancGradualDelete)
+  target.setAttribute("deleteIt", "true");
+  setTimeout(function() {
+    SLIDEDELETE(target, parent);
+  }, 1500);
+}
+function cancGradualDelete(e){
+  let note = e.currentTarget.children[0];
+  note.setAttribute("deleteIt", "false");
+  let parent = e.currentTarget;
+  let target = parent.children[0];
+  SLIDEDELETE(target, parent);
+  e.currentTarget.removeEventListener("click", cancGradualDelete);
+}
+function SLIDEDELETE(target, parent){
+  if(JSON.parse(target.getAttributeNode("deleteIt").value)){
+    parent.parentElement.removeChild(parent);
+  }else{
+    target.style.display = "flex";
+    target.style.left = "0";
+    parent.lastElementChild.textContent = "";
+    parent.style.background = "#444";
+    parent.style.justifyContent = "center";
   }
 }
 function deleteAll(){
@@ -314,9 +372,13 @@ function save(){
     infos.new = false;
     let pos = notes.childElementCount;
     infos.pos = pos;
+    let aNoteParent = document.createElement("div");
+    aNoteParent.className = "parent";
     let aNote = document.createElement("div");
     aNote.id = "note"+pos;
     aNote.className = "aNote";
+    aNote.addEventListener("touchmove", slideDelete);
+    aNote.addEventListener("touchend", rePos);
     let categoryColor = document.createElement("div");
     categoryColor.className = "categoryColor";
     aNote.appendChild(categoryColor);
@@ -350,18 +412,22 @@ function save(){
     timeString += " " + date.getDate();
     timeString += ", " + date.getFullYear();
     if(use12Hours){
-      timeString += (date.getHours() > 12) ? ` ${date.getHours() - 12}:${date.getMinutes()} PM`: ` ${date.getHours()}:${date.getMinutes()} AM`;
+      timeString += (date.getHours() > 12) ? ` ${Number(date.getHours() - 12).toPrecision(3)}:${date.getMinutes()} PM`: ` ${date.getHours()}:${date.getMinutes()} AM`;
     }else{
       timeString += " " + date.getHours() +":"+ date.getMinutes();
     }
     time.className = "time";
     time.textContent = timeString;
+    let warning = document.createElement("div");
+    warning.setAttribute("role", "delete warning");
     aNote.appendChild(container);
     aNote.appendChild(time);
-    notes.appendChild(aNote);
+    aNoteParent.appendChild(aNote);
+    aNoteParent.appendChild(warning);
+    notes.appendChild(aNoteParent);
   }else{
     let pos = infos.pos;
-    let aNote = notes.children[pos];
+    let aNote = notes.children[pos].children[0];
     aNote.id = "note"+pos;
     let time = aNote.children[2];
     let timeString = "";
@@ -445,7 +511,7 @@ function reArrangePos(){
   let notes = document.getElementById("notes");
   if(notes.children.length > 0){
     for (let i = 0; i < notes.children.length; i++){
-      let aNote = notes.children[i];
+      let aNote = notes.children[i].children[0];
       aNote.id = "note"+i;
       let p = aNote.children[1].children[0];
       let infos = JSON.parse(p.getAttributeNode("infos").value);
@@ -474,7 +540,7 @@ function changeCategoryColor(){
   let notes = document.getElementById("notes");
   if(notes.children.length > 0){
     for (let i = 0; i < notes.children.length; i++){
-      let aNote = notes.children[i];
+      let aNote = notes.children[i].children[0];
       let p = aNote.children[1].children[0];
       let infos = JSON.parse(p.getAttributeNode("infos").value);
       let category = infos.category;
@@ -489,7 +555,7 @@ function sortBySize(){
   let notes = document.getElementById("notes");
   let lengths = {};
   for(let i = 0;i < notes.children.length; i++){
-    let aNote = notes.children[i];
+    let aNote = notes.children[i].children[0];
     aNoteId = aNote.id;
     let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value)
     let length = infos.length;
@@ -499,8 +565,7 @@ function sortBySize(){
   for(length in lengths){
     if(counter <= notes.children.length){
       if(document.getElementById(lengths[length]) != notes.children[counter]){
-        console.log(lengths[length])
-        notes.insertBefore(document.getElementById(lengths[length]), notes.children[counter]);
+        notes.insertBefore(document.getElementById(lengths[length]).parentElement, notes.children[counter]);
       }
     }
     counter++;
@@ -517,19 +582,17 @@ function sortByTime(){
   let notes = document.getElementById("notes");
   let times = {};
   for(let i = 0;i < notes.children.length; i++){
-    let aNote = notes.children[i];
+    let aNote = notes.children[i].children[0];
     aNoteId = aNote.id;
     let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value)
     let time = infos.time;
     times[time] = aNoteId;
   }
-  console.log(JSON.stringify(times))
   let counter = 0;
   for(time in times){
     if(counter <= notes.children.length){
       if(document.getElementById(times[time]) != notes.children[counter]){
-        console.log(times[time])
-        notes.insertBefore(document.getElementById(times[time]), notes.children[counter]);
+        notes.insertBefore(document.getElementById(times[time]).parentElement, notes.children[counter]);
       }
     }
     counter++;
@@ -546,12 +609,11 @@ function sortByCategory(){
   let notes = document.getElementById("notes");
   let categories = {};
   for(let i = 0;i < notes.children.length; i++){
-    let aNote = notes.children[i];
+    let aNote = notes.children[i].children[0];
     aNoteId = aNote.id;
     let infos = JSON.parse(aNote.children[1].children[0].getAttributeNode("infos").value);
     let category = infos.category;
     if(categories[category]){
-      //console.log(categories[category]categories[category.length])
       categories[category][categories[category].length] = aNoteId;
     }else{
       categories[category] = [];
@@ -562,11 +624,10 @@ function sortByCategory(){
   let indices = 0;
   for(category in categories){
     categories[category].sort();
-    //debug position 
     if(counter <= notes.children.length){
       for (let i = 0;i < categories[category].length;i++){
         if(document.getElementById(categories[category][i]) != notes.children[counter]){
-          notes.insertBefore(document.getElementById(categories[category][i]), notes.children[counter]);
+          notes.insertBefore(document.getElementById(categories[category][i]).parentElement, notes.children[counter]);
         }
         counter++;
       }
@@ -577,7 +638,6 @@ function sortByCategory(){
   setTimeout(function() {
     message.style.animation = "";
   }, 2000);
-  reArrangePos();
   reArrangePos();
 }
 
