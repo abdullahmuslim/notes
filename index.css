@@ -172,6 +172,7 @@ main{
   border-radius: 3%;
   background: #444;
   overflow: hidden;
+  user-select: none;
 }
 .category{
   display: flex;
@@ -193,6 +194,7 @@ main{
   display: none;
   background: #444;
 }
+
 #addCategory{
   font-size: 15vw;
 }

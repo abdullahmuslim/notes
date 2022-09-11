@@ -51,27 +51,27 @@
     <div id="edit">
       <textarea id="textarea"></textarea>
       <div id="category" onclick="openCategory()">
-        <div class="clickables category others" onclick="changeCategory(event)">
+        <div ontouchstart="prepareDelete(event)" class="clickables category others" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
-            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #14483a; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #14483a; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #14483a; stroke-width: 7; stroke-linecap: round;"/>
           </svg>
           <p class="child">Work</p>
         </div>
-        <div class="clickables category others" onclick="changeCategory(event)">
+        <div ontouchstart="prepareDelete(event)" class="clickables category others" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
-            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #4b97fa; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #4b97fa; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #4b97fa; stroke-width: 7; stroke-linecap: round;"/>
           </svg>
           <p class="child">Study</p>
         </div>
         <div class="clickables category current" onclick="changeCategory(event)">
           <svg class="child" viewBox="0 0 100 100">
-            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
-            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="20" y1="20" x2="80" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="80" y1="20" x2="50" y2="80" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
+            <line x1="50" y1="80" x2="20" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
           </svg>
           <p class="child">Uncategorized</p>
         </div>

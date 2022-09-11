@@ -49,9 +49,9 @@ function rePos(e){
   target.style.left = "0";
   target.style.background = "#444";
   if(position < minX || position > maxX){
-    oldPos = 0;
     gradualDelete(target);
   }
+  oldPos = 0;
 }
 function gradualDelete(target){
   let height = window.getComputedStyle(target).getPropertyValue("height").replace("px", "")
@@ -79,6 +79,7 @@ function cancGradualDelete(e){
 function SLIDEDELETE(target, parent){
   if(JSON.parse(target.getAttributeNode("deleteIt").value)){
     parent.parentElement.removeChild(parent);
+    saveToLocal();
   }else{
     target.style.display = "flex";
     target.style.left = "0";
@@ -97,6 +98,7 @@ function DELETEALL(){
   let notes = document.getElementById("notes");
   notes.innerHTML = "";
   cancBox();
+  saveToLocal();
 }
 function deleteNote(event){
   let p = event.target.parentElement.firstElementChild;
@@ -120,6 +122,7 @@ function DELETENOTE(pos){
   notes.removeChild(child);
   cancBox();
   reArrangePos();
+  saveToLocal();
 }
 function read(event){
   let navBtn1 = document.getElementById("navBtn1");
@@ -208,7 +211,7 @@ function add(){
   navBtn2[1].style.display = "flex";//save icon
   edit.style.display = "flex";
   let time = new Date().getTime()
-  let values = {"category":"Uncategorized","time":time,"length":0,"use12Hours":true, "new":true}
+  let values = {"category":"Uncategorized","time":time,"length":0, "new":true}
   textarea.setAttribute("infos", JSON.stringify(values));
 }
 function cancEdit(){
@@ -234,8 +237,10 @@ function cancEdit(){
 function openCategory(){
   let trans = document.getElementById("trans");
   trans.style.left = "0";
-  let current = document.getElementsByClassName("current")[0];
-  current.style.background = "#333";
+  try {
+    let current = document.getElementsByClassName("current")[0];
+    current.style.background = "#333";
+  } catch (e) {}
   let others = document.getElementsByClassName("others");
   for(let i = 0; i < others.length; i++){
     others[i].style.display = "flex";
@@ -248,8 +253,12 @@ function openCategory(){
 function closeCategory(){
   let trans = document.getElementById("trans");
   trans.style.left = "101vw";
-  let current = document.getElementsByClassName("current")[0];
-  current.style.background = "#444";
+  try{
+    let current = document.getElementsByClassName("current")[0];
+    current.style.background = "#444";
+  }catch(e){
+    /*errors here a probably because of alteration due to checkDelete (f) on the category tray*/
+  }
   let others = document.getElementsByClassName("others");
   for(let i = 0; i < others.length; i++){
     others[i].style.display = "none";
@@ -272,26 +281,43 @@ function autoFocus(){
   }
 }
 function changeCategory(event){
-  let current = document.getElementsByClassName("current");
-  current[0].classList.remove("current");
+  try{
+    let current = document.getElementsByClassName("current");
+    current[0].classList.remove("current");
+  }catch(e){
+    /*errors here a probably because of alteration due to checkDelete (f) on the category tray*/
+  }
   // make all options others first
   let category = document.getElementsByClassName("category");
   for(let i = 0; i < category.length; i++){
     category[i].classList.add("others");
     category[i].style.background = "#444";
   }
-  let target = event.target;
-  if(target.classList.contains("child")){
-    target = target.parentElement;
+  let target = event.currentTarget;
+  if(target.lastElementChild.classList.contains("stakeCategory")){
+    target.classList.remove("category");
+    let category = document.getElementsByClassName("category");
+    if(category.length > 0){
+      target = category[0];
+      let element = target.children[1];
+      let selected = element.textContent;
+      let textarea = document.getElementById("textarea");
+      let infos = JSON.parse(textarea.getAttributeNode("infos").value);
+      target.classList.add("current");
+      target.classList.remove("others");
+      infos.category = selected;
+      textarea.setAttribute("infos", JSON.stringify(infos));
+    }
+  }else{
+    let element = target.children[1];
+    let selected = element.textContent;
+    let textarea = document.getElementById("textarea");
+    let infos = JSON.parse(textarea.getAttributeNode("infos").value);
+    target.classList.add("current");
+    target.classList.remove("others");
+    infos.category = selected;
+    textarea.setAttribute("infos", JSON.stringify(infos));
   }
-  target.classList.add("current");
-  target.classList.remove("others");
-  let element = target.children[1];
-  let selected = element.textContent;
-  let textarea = document.getElementById("textarea");
-  let infos = JSON.parse(textarea.getAttributeNode("infos").value);
-  infos.category = selected;
-  textarea.setAttribute("infos", JSON.stringify(infos));
 }
 function addCategory(){
   let parent = document.getElementById("category");
@@ -329,14 +355,8 @@ function confirmNewCategory(e){
     let newCategoryName = newCategoryDef.value;
     let newCategory = document.createElement("div");
     newCategory.className = "clickables category others";
-    newCategory.onclick = function(){
-    changeCategory(event);
-    };
-      newCategory.innerHTML = `<svg class="child" viewBox="0 0 100 100">
-      <line x1="20" y1="20" x2="80" y2="20" style="stroke: #5ff; stroke-width: 7; stroke-linecap: round;"/>
-      <line x1="80" y1="20" x2="50" y2="80" style="stroke: #f5f; stroke-width: 7; stroke-linecap: round;"/>
-      <line x1="50" y1="80" x2="20" y2 ="20" style="stroke: #ff5; stroke-width: 7; stroke-linecap: round;"/>
-    </svg>`;
+    newCategory.addEventListener("click", changeCategory);
+    newCategory.addEventListener("touchstart", prepareDelete);
     let p = document.createElement("p");
     p.className = "child";
     //change newCategoryName to title case.
@@ -348,6 +368,11 @@ function confirmNewCategory(e){
         finalString += newCategoryName.charAt(i).toLowerCase();
       }
     }
+    newCategory.innerHTML = `<svg class="child" viewBox="0 0 100 100">
+      <line x1="20" y1="20" x2="80" y2="20" style="stroke: ${generateColor(finalString)}; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="80" y1="20" x2="50" y2="80" style="stroke: ${generateColor(finalString)}; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="50" y1="80" x2="20" y2 ="20" style="stroke: ${generateColor(finalString)}; stroke-width: 7; stroke-linecap: round;"/>
+    </svg>`;
     newCategoryName = finalString;
     p.textContent = newCategoryName;
     newCategory.appendChild(p);
@@ -356,6 +381,48 @@ function confirmNewCategory(e){
   // force categories update
     closeCategory();
     openCategory();
+  }
+}
+function prepareDelete(e){
+  let category = e.currentTarget;
+  let startTime = new Date().getTime();
+  values = startTime;
+  category.setAttribute("delete", JSON.stringify(values));
+  category.addEventListener("touchmove", checkDelete)
+  category.addEventListener("touchend", checkDelete)
+}
+function checkDelete(e){
+  let category = e.currentTarget;
+  let endTime = new Date().getTime();
+  let startTime = JSON.parse(category.getAttributeNode("delete").value);
+  if(endTime - startTime > 600){
+    category.removeEventListener("touchmove", checkDelete);
+    category.style.background = "#f66";
+    let img = document.createElement("img");
+    img.className = "clickables delete stakeCategory";
+    img.src = "delete.png";
+    category.appendChild(img)
+    category.addEventListener("click", DELETECATEGORY);
+    category.parentElement.replaceChild(category, category);
+    document.getElementById("trans").addEventListener("click", cancDeleteCategory);
+    document.getElementById("category").addEventListener("click", cancDeleteCategory);
+  }
+  category.removeEventListener("touchend", checkDelete);
+}
+function DELETECATEGORY(e){
+  let category = e.currentTarget
+  category.parentElement.removeChild(category);
+}
+function cancDeleteCategory(){
+  let stakeCategory = document.getElementsByClassName("stakeCategory");
+  if(stakeCategory.length > 0){
+    for(let i = 0;i < stakeCategory.length; i++){
+      stakeCategory[i].parentElement.removeEventListener("click", DELETECATEGORY);
+      stakeCategory[i].parentElement.classList.add("category");
+      document.getElementById("trans").removeEventListener("click", cancDeleteCategory);
+      document.getElementById("category").removeEventListener("click", cancDeleteCategory);
+      stakeCategory[i].parentElement.removeChild(stakeCategory[i]);
+    }
   }
 }
 function save(){
@@ -367,8 +434,8 @@ function save(){
   let notes = document.getElementById("notes");
   let date = new Date();
   infos.time = date.getTime();
-  let use12Hours = infos.use12Hours;
   if(infos.new){
+    infos.content = note;
     infos.new = false;
     let pos = notes.childElementCount;
     infos.pos = pos;
@@ -412,9 +479,21 @@ function save(){
     timeString += " " + date.getDate();
     timeString += ", " + date.getFullYear();
     if(use12Hours){
-      timeString += (date.getHours() > 12) ? ` ${Number(date.getHours() - 12).toPrecision(3)}:${date.getMinutes()} PM`: ` ${date.getHours()}:${date.getMinutes()} AM`;
+      if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
+        timeString += " 0";
+      }else{
+        timeString += " ";
+      }
+      timeString += (date.getHours() > 12) ? `${date.getHours() - 12}`: `${date.getHours()}`;
+      if(date.getMinutes() < 10){
+        timeString += ":0";
+      }else{
+        timeString += ":";
+      }
+      timeString += (date.getHours() > 12) ? `${date.getMinutes()} PM`: `${date.getMinutes()} AM`;
     }else{
-      timeString += " " + date.getHours() +":"+ date.getMinutes();
+      timeString += (date.getHours() < 10) ? " 0" + date.getHours() : " " + date.getHours();
+      timeString += (date.getMinutes() < 10) ? ":0" + date.getMinutes() : ":" + date.getMinutes();
     }
     time.className = "time";
     time.textContent = timeString;
@@ -426,6 +505,7 @@ function save(){
     aNoteParent.appendChild(warning);
     notes.appendChild(aNoteParent);
   }else{
+    infos.content = note;
     let pos = infos.pos;
     let aNote = notes.children[pos].children[0];
     aNote.id = "note"+pos;
@@ -435,9 +515,21 @@ function save(){
     timeString += " " + date.getDate();
     timeString += ", " + date.getFullYear();
     if(use12Hours){
-      timeString += (date.getHours() > 12) ? ` ${date.getHours() - 12}:${date.getMinutes()} PM`: ` ${date.getHours()}:${date.getMinutes()} AM`;
+      if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
+        timeString += " 0";
+      }else{
+        timeString += " ";
+      }
+      timeString += (date.getHours() > 12) ? `${date.getHours() - 12}`: `${date.getHours()}`;
+      if(date.getMinutes() < 10){
+        timeString += ":0";
+      }else{
+        timeString += ":";
+      }
+      timeString += (date.getHours() > 12) ? `${date.getMinutes()} PM`: `${date.getMinutes()} AM`;
     }else{
-      timeString += " " + date.getHours() +":"+ date.getMinutes();
+      timeString += (date.getHours() < 10) ? " 0" + date.getHours() : " " + date.getHours();
+      timeString += (date.getMinutes() < 10) ? ":0" + date.getMinutes() : ":" + date.getMinutes();
     }
     time.textContent = timeString;
     let p = aNote.children[1].children[0];
@@ -446,6 +538,7 @@ function save(){
   }
   changeCategoryColor();
   cancEdit();
+  saveToLocal();
 }
 
 window.onload = function(){
@@ -519,6 +612,7 @@ function reArrangePos(){
       p.setAttribute("infos", JSON.stringify(infos));
     }
   }
+  saveToLocal();
 }
 function generateColor(string){
   let finalString = "";
@@ -575,6 +669,7 @@ function sortBySize(){
   setTimeout(function() {
     message.style.animation = "";
   }, 2000);
+  lastSort = "size";
   reArrangePos();
 }
 
@@ -602,6 +697,7 @@ function sortByTime(){
   setTimeout(function() {
     message.style.animation = "";
   }, 2000);
+  lastSort = "time";
   reArrangePos();
 }
 
@@ -632,6 +728,7 @@ function sortByCategory(){
         counter++;
       }
     }
+    lastSort = "category";
   }
   let message = document.getElementById("message");
   message.style.animation = "showMessage 2s linear";
@@ -641,7 +738,46 @@ function sortByCategory(){
   reArrangePos();
 }
 
-changeCategoryColor();
+function saveToLocal(){
+  let categories = document.getElementById("category");
+  let notes = document.getElementById("notes");
+  let data = {};
+  data.sortOrder = lastSort;
+  data.use12Hours = use12Hours;
+  data.categories = [];
+  data.notes = {};
+  if(categories.children.length > 0){
+    for(let i = 0; i < categories.children.length-1; i++){
+      let text = categories.children[i].children[1].textContent;
+      data.categories[i] = text;
+    }
+  }
+  if (notes.children.length > 0){
+    for(let i = 0; i < notes.children.length; i++){
+      let note = notes.children[i].children[0];
+      let id = note.id;
+      let p = note.children[1].children[0];
+      let infos = JSON.parse(p.getAttributeNode("infos").value);
+      data.notes[id] = infos;
+    }
+  }
+}
 
-/*let r = (Math.random() + 1).toString(16).substring(7);
-r = ("finalString".charCodeAt(1))//. toString(16);*/
+function load(data){
+  
+}
+let use12Hours;
+let lastSort;
+if(localStorage.getItem("data")){
+  let data = JSON.parse(localStorage.getItem("data"));
+  use12Hours = data.use12Hours;
+  lastSort = data.sortOrder;
+  load(data);
+}else{
+  lastSort = "category";
+  use12Hours = true;
+  data = {sortOrder: "time", categories: ["Work", "Study", "Uncategorized"], use12Hours: true, Notes:{}};
+  localStorage.setItem("data", JSON.stringify(data));
+}
+
+changeCategoryColor();
