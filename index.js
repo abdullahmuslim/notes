@@ -122,7 +122,6 @@ function DELETENOTE(pos){
   notes.removeChild(child);
   cancBox();
   reArrangePos();
-  saveToLocal();
 }
 function read(event){
   let navBtn1 = document.getElementById("navBtn1");
@@ -210,8 +209,9 @@ function add(){
   navBtn2[0].style.display = "none";//menu icon
   navBtn2[1].style.display = "flex";//save icon
   edit.style.display = "flex";
+  let selected = document.getElementsByClassName("current")[0].children[1].textContent;
   let time = new Date().getTime()
-  let values = {"category":"Uncategorized","time":time,"length":0, "new":true}
+  let values = {category:selected,time:time,length:0, new:true}
   textarea.setAttribute("infos", JSON.stringify(values));
 }
 function cancEdit(){
@@ -328,9 +328,7 @@ function addCategory(){
   newCategory.maxlength = 13;
   newCategory.style.width = "100%";
   newCategory.style.height = "10vw";
-  newCategory.onkeypress = function(){
-    confirmNewCategory(event);
-  }
+  newCategory.addEventListener("keypress", confirmNewCategory)
   //newCategory.addEventListener("click", );
   parent.replaceChild(newCategory, addCategory);
   newCategory.focus();
@@ -478,6 +476,9 @@ function save(){
     timeString += months[date.getMonth()];
     timeString += " " + date.getDate();
     timeString += ", " + date.getFullYear();
+    date.getHours = function(){
+      return 11+12;
+    }
     if(use12Hours){
       if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
         timeString += " 0";
@@ -545,7 +546,10 @@ window.onload = function(){
   let textarea = document.getElementById("textarea");
   textarea.addEventListener("input", autoResize);
 }
-
+window.unload = function(){
+  saveToLocal();
+  alert("saved");
+}
 function ConfirmBox(message){
   this.message = message;
   this.create = function(callback){
@@ -739,17 +743,21 @@ function sortByCategory(){
 }
 
 function saveToLocal(){
-  let categories = document.getElementById("category");
+  let categories = document.getElementsByClassName("category");
   let notes = document.getElementById("notes");
   let data = {};
   data.sortOrder = lastSort;
   data.use12Hours = use12Hours;
   data.categories = [];
   data.notes = {};
-  if(categories.children.length > 0){
-    for(let i = 0; i < categories.children.length-1; i++){
-      let text = categories.children[i].children[1].textContent;
+  if(categories.length > 0){
+    for(let i = 0; i < categories.length; i++){
+      let category = categories[i];
+      let text = category.children[1].textContent;
       data.categories[i] = text;
+      if(category.classList.contains("current")){
+        data.lastCategory = text;
+      }
     }
   }
   if (notes.children.length > 0){
@@ -761,22 +769,110 @@ function saveToLocal(){
       data.notes[id] = infos;
     }
   }
+  localStorage.setItem("data", JSON.stringify(data));
 }
 
 function load(data){
-  
+  console.log(data.categories)
+  let categories = document.getElementById("category");
+  categories.innerHTML = "";
+  for(categoryContent of data.categories){
+    let category = document.createElement("div");
+    category.className = "clickables category";
+    if (data.lastCategory == categoryContent){
+      category.classList.add("current");
+    }else{
+      category.classList.add("others");
+    }
+    if(categoryContent !== "Uncategorized"){
+      category.addEventListener("touchstart", prepareDelete);
+    }
+    category.addEventListener("click", changeCategory);
+    let svg = document.createElement("svg");
+    svg.className = "child";
+    //svg.style.background = `${generateColor(categoryContent)}`;
+    svg.setAttribute("viewBox", "0 0 100 100");
+    let line1 = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line1.setAttribute("x1", "20");
+    line1.setAttribute("y1", "20");
+    line1.setAttribute("x2", "50");
+    line1.setAttribute("y2", "80");
+    line1.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
+    let line2 = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line2.setAttribute("x1", "80");
+    line2.setAttribute("y1", "20");
+    line2.setAttribute("x2", "80");
+    line2.setAttribute("y2", "20");
+    line2.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
+    let line3 = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line3.setAttribute("x1", "50");
+    line3.setAttribute("y1", "80");
+    line3.setAttribute("x2", "20");
+    line3.setAttribute("y2", "20");
+    line3.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
+    /*let remains = `<line x1="20" y1="20" x2="80" y2="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="80" y1="20" x2="50" y2="80" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="50" y1="80" x2="20" y2="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>`;*/
+      //remains is some code under construction
+    svg.appendChild(line1);
+    svg.appendChild(line2);
+    svg.appendChild(line3);
+    /*svg.innerHTML.replace(/><\/line>/g, "/>");
+    /*let svgns = 'http://www.w3.org/2000/svg'
+    let newRect = document.createElementNS(svgns, "rect");
+    newRect.setAttribute("x", "150");
+    newRect.setAttribute("y", "150");
+    newRect.setAttribute("width", "100");
+    newRect.setAttribute("height", "100");
+    newRect.setAttribute("fill", "#5cceee");
+    svg.appendChild(newRect)*/
+    category.appendChild(svg);
+    let p = document.createElement("p");
+    p.className = "child";
+    p.textContent = `${categoryContent}`;
+    category.appendChild(p)
+    categories.appendChild(category);
+    console.log(category.children[0])
+  }
+  /*let category = document.createElement("div");
+  category.className = "clickables category";
+  if (data.lastCategory == "Uncategorized"){
+    category.classList.add("current");
+  }else{
+    category.classList.add("others");
+  }
+  category.addEventListener("click", changeCategory);
+  let svg = document.createElement("svg");
+  svg.className = "child";
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.innerHTML = `<line x1="20" y1="20" x2="80" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="80" y1="20" x2="50" y2="80" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
+      <line x1="50" y1="80" x2="20" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>`
+  category.appendChild(svg);
+  let p = document.createElement("p");
+  p.className = "child";
+  p.textContent = "Uncategorized";
+  category.appendChild(p);
+  categories.appendChild(category)*/
+  let addCategory = document.createElement("div");
+  addCategory.id = "addCategory";
+  addCategory.addEventListener("click", addCategory);
+  addCategory.innerHTML = "+";
+  categories.appendChild(addCategory);
+  //data loading
 }
 let use12Hours;
 let lastSort;
 if(localStorage.getItem("data")){
   let data = JSON.parse(localStorage.getItem("data"));
+  console.log(data)
   use12Hours = data.use12Hours;
   lastSort = data.sortOrder;
   load(data);
 }else{
   lastSort = "category";
   use12Hours = true;
-  data = {sortOrder: "time", categories: ["Work", "Study", "Uncategorized"], use12Hours: true, Notes:{}};
+  data = {sortOrder: "time", categories: ["Work", "Study"], use12Hours: true, Notes:{}};
   localStorage.setItem("data", JSON.stringify(data));
 }
 
