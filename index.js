@@ -773,7 +773,6 @@ function saveToLocal(){
 }
 
 function load(data){
-  console.log(data.categories)
   let categories = document.getElementById("category");
   categories.innerHTML = "";
   for(categoryContent of data.categories){
@@ -788,84 +787,29 @@ function load(data){
       category.addEventListener("touchstart", prepareDelete);
     }
     category.addEventListener("click", changeCategory);
-    let svg = document.createElement("svg");
-    svg.className = "child";
-    //svg.style.background = `${generateColor(categoryContent)}`;
-    svg.setAttribute("viewBox", "0 0 100 100");
-    let line1 = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line1.setAttribute("x1", "20");
-    line1.setAttribute("y1", "20");
-    line1.setAttribute("x2", "50");
-    line1.setAttribute("y2", "80");
-    line1.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
-    let line2 = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line2.setAttribute("x1", "80");
-    line2.setAttribute("y1", "20");
-    line2.setAttribute("x2", "80");
-    line2.setAttribute("y2", "20");
-    line2.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
-    let line3 = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line3.setAttribute("x1", "50");
-    line3.setAttribute("y1", "80");
-    line3.setAttribute("x2", "20");
-    line3.setAttribute("y2", "20");
-    line3.style = `stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;`;
-    /*let remains = `<line x1="20" y1="20" x2="80" y2="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
+    category.innerHTML = `<svg class="child" viewBox="0 0 100 100">
+      <line x1="20" y1="20" x2="80" y2="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
       <line x1="80" y1="20" x2="50" y2="80" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
-      <line x1="50" y1="80" x2="20" y2="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>`;*/
-      //remains is some code under construction
-    svg.appendChild(line1);
-    svg.appendChild(line2);
-    svg.appendChild(line3);
-    /*svg.innerHTML.replace(/><\/line>/g, "/>");
-    /*let svgns = 'http://www.w3.org/2000/svg'
-    let newRect = document.createElementNS(svgns, "rect");
-    newRect.setAttribute("x", "150");
-    newRect.setAttribute("y", "150");
-    newRect.setAttribute("width", "100");
-    newRect.setAttribute("height", "100");
-    newRect.setAttribute("fill", "#5cceee");
-    svg.appendChild(newRect)*/
-    category.appendChild(svg);
+      <line x1="50" y1="80" x2="20" y2 ="20" style="stroke: ${generateColor(categoryContent)}; stroke-width: 7; stroke-linecap: round;"/>
+    </svg>`;
     let p = document.createElement("p");
     p.className = "child";
     p.textContent = `${categoryContent}`;
     category.appendChild(p)
     categories.appendChild(category);
-    console.log(category.children[0])
   }
-  /*let category = document.createElement("div");
-  category.className = "clickables category";
-  if (data.lastCategory == "Uncategorized"){
-    category.classList.add("current");
-  }else{
-    category.classList.add("others");
-  }
-  category.addEventListener("click", changeCategory);
-  let svg = document.createElement("svg");
-  svg.className = "child";
-  svg.setAttribute("viewBox", "0 0 100 100");
-  svg.innerHTML = `<line x1="20" y1="20" x2="80" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
-      <line x1="80" y1="20" x2="50" y2="80" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>
-      <line x1="50" y1="80" x2="20" y2="20" style="stroke: #a3eaf6; stroke-width: 7; stroke-linecap: round;"/>`
-  category.appendChild(svg);
-  let p = document.createElement("p");
-  p.className = "child";
-  p.textContent = "Uncategorized";
-  category.appendChild(p);
-  categories.appendChild(category)*/
-  let addCategory = document.createElement("div");
-  addCategory.id = "addCategory";
-  addCategory.addEventListener("click", addCategory);
-  addCategory.innerHTML = "+";
-  categories.appendChild(addCategory);
+  let categoryAdder = document.createElement("div");
+  categoryAdder.id = "addCategory";
+  categoryAdder.addEventListener("click", addCategory);
+  categoryAdder.innerHTML = "+";
+  categories.appendChild(categoryAdder);
   //data loading
 }
 let use12Hours;
 let lastSort;
 if(localStorage.getItem("data")){
   let data = JSON.parse(localStorage.getItem("data"));
-  if(data.lastCategory == undefined){
+  if(data.lastCategory == undefined || data.lastCategory == null){
     data.lastCategory = "Uncategorized";
   }
   use12Hours = data.use12Hours;
