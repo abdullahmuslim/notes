@@ -865,7 +865,9 @@ let use12Hours;
 let lastSort;
 if(localStorage.getItem("data")){
   let data = JSON.parse(localStorage.getItem("data"));
-  console.log(data)
+  if(data.lastCategory == undefined){
+    data.lastCategory = "Uncategorized";
+  }
   use12Hours = data.use12Hours;
   lastSort = data.sortOrder;
   load(data);
