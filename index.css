@@ -39,19 +39,19 @@ input{
   display: none;
   flex-direction: column;
   text-align: left;
-  padding: 5vw;
+  padding: .5em;
   border-radius: 3%;
   color: #000;
   background: #fff;
   transition: width 2s ease-in;
 }
 #menu div{
-  padding: 2vw 0;
+  padding: .5em 0;
 }
 #menu p{
   color: #c44;
   margin: none;
-  padding: 2vw 0;
+  padding: .2em 0;
 }
 #confirmBox{
   z-index: 4;
@@ -71,10 +71,23 @@ input{
   text-align: left;
 }
 #confirmBtns{
+  display: flex;
+  margin-top: 3vw;
+  flex-direction: row;
+  justify-content: space-between;
   user-select: none;
 }
-#confirmBtns p:active{
-  transform: scale(0.7);
+#confirmBtn1{
+  border-radius: 10%;
+  background: #f22;
+  box-shadow: 1px 1px 1px #000;
+  padding: 3vw;
+}
+#confirmBtn2{
+  border-radius: 10%;
+  background: #5e5;
+  box-shadow: 1px 1px 1px #000;
+  padding: 3vw;
 }
 .clickables:active{
   transform: scale(0.7);
@@ -88,12 +101,11 @@ nav{
   justify-content: space-between;
   align-items: center;
   width: 100vw;
-  height: 25vw;
+  height: 5em;
   background: #333;
 }
 #navBtn1, #navBtn2{
   flex: 1;
-  /*background: #00f;*/
 }
 #navBtn1{
   display: none;
@@ -101,14 +113,17 @@ nav{
 #navBtn2 svg:nth-child(2){
   display: none;
 }
+#navBtn1 svg, #navBtn2 svg{
+  height: 4em;
+  width: 4em;
+}
 #navTxt{
   font-family: Sans-Serif;
   font-size: 10vw;
   flex: 2;
-  /*background: #fff;*/
 }
 main{
-  margin-top: 25vw;
+  margin-top: 5em;
 }
 #read{
   display: none;
@@ -119,13 +134,6 @@ main{
   text-align: justify;
   white-space: pre-wrap;
 }
-/*#read div{
-  position: fixed;
-  bottom: 4vh;
-  left: 0;
-  display: flex;
-  flex-direction: row;
-}*/
 #read img:first-of-type{
   position: fixed;
   bottom: 4vh;
@@ -137,18 +145,11 @@ main{
   right: 2vw;
 }
 #edit{
-  /*position: absolute;
-  top: 25vw;
-  left: 0;*/
   width: 100vw;
   height: auto;
   display: none;
-  /*background: #fef;*/
 }
 #edit textarea{
-  /*position: fixed;
-  bottom: 10vh;
-  left: 0;*/
   z-index: 1;
   margin-bottom: 12vw;
   font-size: 7vw;
@@ -163,15 +164,16 @@ main{
 }
 #category{
   z-index: 3;
-  font-size: 4vw;
+  font-size: .9em;
   position: fixed;
   left: 2vw;
   bottom: 2vh;
   width: 40vw;
-  height: 10vw;
+  height: 3em;
   border-radius: 3%;
   background: #444;
   overflow: hidden;
+  padding: auto;
   user-select: none;
 }
 .category{
@@ -180,15 +182,15 @@ main{
   align-items: center;
 }
 .category svg{
-  width: 10vw;
-  height: 10vw;
+  width: 4em;
+  height: 4em;
   flex: 1;
-  margin-left: 2vw;
+  margin-left: 1em;
 }
 .category p{
   flex: 5;
   text-align: left;
-  margin-left: 2vw;
+  margin-left: 1em;
 }
 .others{
   display: none;
@@ -203,8 +205,7 @@ main{
   bottom: 2vh;
   right: 2vw;
   padding: 1vw;
-  border-radius: 50%;
-  /*background: #f00;*/
+  z-index: 1;
 }
 #notes{
   display: flex;
@@ -227,15 +228,18 @@ main{
   justify-content: center;
   align-items: center;
   width: 80vw;
-  border: 2px solid #fff;
+  height: 6em;
+  background: #444;
+  box-shadow: -2px -2px 2px #555, 2px 2px 2px #333;
 }
 .categoryColor{
   flex: 1;
   width: 3vw;
-  height: 20vw;
+  height: 6em;
   margin: 0;
   color: #409f93;
   background: #409f93;
+  user-select: none;
 }
 .container{
   flex: 9;
@@ -244,9 +248,10 @@ main{
   justify-content: center;
   align-items: center;
   width: 77vw;
-  padding-top: 7vw;
+  padding-top: 1em;
 }
 .container p{
+  font-size: 1.2em;
   justify-content: none;
   align-items: none;
   padding: auto;
@@ -260,19 +265,21 @@ main{
 }
 .container img{
   flex: 1;
-  padding: 3vw;
+  padding: 1em;
 }
 .delete{
-  width: 10vw;
+  height: 2em;
+  width: 2em;
 }
 .editPen{
-  width: 10vw;
+  height: 2em;
+  width: 2em;
 }
 .time{
   position: absolute;
   top: 0;
   right: 0;
-  font-size: 4vw;
+  font-size: 4vw);
   font-family: serif;
   letter-spacing: 0.1vw;
 }
@@ -285,9 +292,9 @@ main{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 15vw;
-  width: 20vw;
-  height: 20vw;
+  font-size: 7vh;
+  width: 10vh;
+  height: 10vh;
   border: 2px solid #fff;
   border-radius: 50%;
   
@@ -315,3 +322,5 @@ main{
     visibility: hidden;
   }
 }
+/*@media screen and (min-width: 500px){
+}*/

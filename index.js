@@ -1,5 +1,5 @@
 //get viewport width
-let viewportWidth = window.innerWidth;
+let viewportWidth = window.screen.availWidth;
 let maxX = (viewportWidth / 4);
 let minX = maxX * -1;
 let oldPos = 0;
@@ -168,7 +168,6 @@ function editOld(event){
   let textarea = document.getElementById("textarea");
   textarea.value = event.target.previousElementSibling.innerHTML;
   textarea.setAttribute("infos",event.target.previousElementSibling.getAttributeNode("infos").value);
-  //textarea.infos = JSON.stringify(event.target.getAttributeNode("infos").value);
   document.body.style.background = "#fff";
   let addBtn = document.getElementById("addBtn");
   addBtn.style.display = "none";
@@ -325,11 +324,10 @@ function addCategory(){
   let newCategory = document.createElement("input");
   newCategory.type = "text";
   newCategory.id = "newCategory";
-  newCategory.maxlength = 13;
+  newCategory.maxLength = 13;
   newCategory.style.width = "100%";
   newCategory.style.height = "10vw";
   newCategory.addEventListener("keypress", confirmNewCategory)
-  //newCategory.addEventListener("click", );
   parent.replaceChild(newCategory, addCategory);
   newCategory.focus();
 }
@@ -346,6 +344,10 @@ function cancAddCategory(){
   parent.appendChild(add);
 }
 function confirmNewCategory(e){
+  let newCategory = document.getElementById("newCategory");
+  if(newCategory.innerHTML.length > 13){
+    newCategory.innerHTML = newCategory.innerHTML.substr(0, 12);
+  }
   if(e.keyCode === 13){
     e.preventDefault();
     let parent = document.getElementById("category");
@@ -423,6 +425,35 @@ function cancDeleteCategory(){
     }
   }
 }
+function arrangeDate(dateString){
+  let months = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+  let date = new Date(dateString);
+  let timeString = "";
+  timeString += months[date.getMonth()];
+  timeString += " " + date.getDate();
+  timeString += ", " + date.getFullYear();
+  /*date.getHours = function(){
+     return 11+12;
+  }*/
+  if(use12Hours){
+    if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
+      timeString += " 0";
+    }else{
+      timeString += " ";
+    }
+    timeString += (date.getHours() > 12) ? `${date.getHours() - 12}`: `${date.getHours()}`;
+    if(date.getMinutes() < 10){
+      timeString += ":0";
+    }else{
+      timeString += ":";
+    }
+    timeString += (date.getHours() > 12) ? `${date.getMinutes()} PM`: `${date.getMinutes()} AM`;
+  }else{
+    timeString += (date.getHours() < 10) ? " 0" + date.getHours() : " " + date.getHours();
+    timeString += (date.getMinutes() < 10) ? ":0" + date.getMinutes() : ":" + date.getMinutes();
+  }
+  return timeString;
+}
 function save(){
   let months = ["Jan", "Feb", "Mar","Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
   let textarea = document.getElementById("textarea");
@@ -455,9 +486,6 @@ function save(){
     p.innerHTML = note;
     container.appendChild(p);
     let edit = document.createElement("img");
-    //edit.addEventListener("click", function handleClick(event){
-      //editOld(event);
-   // });
     edit.addEventListener("click", editOld);
     edit.alt = "edit";
     edit.src = "edit.png";
@@ -472,32 +500,8 @@ function save(){
     }
     container.appendChild(deleteNoteImg);
     let time = document.createElement("div");
-    let timeString = "";
-    timeString += months[date.getMonth()];
-    timeString += " " + date.getDate();
-    timeString += ", " + date.getFullYear();
-    date.getHours = function(){
-      return 11+12;
-    }
-    if(use12Hours){
-      if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
-        timeString += " 0";
-      }else{
-        timeString += " ";
-      }
-      timeString += (date.getHours() > 12) ? `${date.getHours() - 12}`: `${date.getHours()}`;
-      if(date.getMinutes() < 10){
-        timeString += ":0";
-      }else{
-        timeString += ":";
-      }
-      timeString += (date.getHours() > 12) ? `${date.getMinutes()} PM`: `${date.getMinutes()} AM`;
-    }else{
-      timeString += (date.getHours() < 10) ? " 0" + date.getHours() : " " + date.getHours();
-      timeString += (date.getMinutes() < 10) ? ":0" + date.getMinutes() : ":" + date.getMinutes();
-    }
     time.className = "time";
-    time.textContent = timeString;
+    time.textContent = arrangeDate(date.getTime());
     let warning = document.createElement("div");
     warning.setAttribute("role", "delete warning");
     aNote.appendChild(container);
@@ -511,28 +515,7 @@ function save(){
     let aNote = notes.children[pos].children[0];
     aNote.id = "note"+pos;
     let time = aNote.children[2];
-    let timeString = "";
-    timeString += months[date.getMonth()];
-    timeString += " " + date.getDate();
-    timeString += ", " + date.getFullYear();
-    if(use12Hours){
-      if(date.getHours() > 12 && (date.getHours()-12).toString.length < 2 || date.getHours().toString().length < 2){
-        timeString += " 0";
-      }else{
-        timeString += " ";
-      }
-      timeString += (date.getHours() > 12) ? `${date.getHours() - 12}`: `${date.getHours()}`;
-      if(date.getMinutes() < 10){
-        timeString += ":0";
-      }else{
-        timeString += ":";
-      }
-      timeString += (date.getHours() > 12) ? `${date.getMinutes()} PM`: `${date.getMinutes()} AM`;
-    }else{
-      timeString += (date.getHours() < 10) ? " 0" + date.getHours() : " " + date.getHours();
-      timeString += (date.getMinutes() < 10) ? ":0" + date.getMinutes() : ":" + date.getMinutes();
-    }
-    time.textContent = timeString;
+    time.textContent = arrangeDate(date.getTime());
     let p = aNote.children[1].children[0];
     p.textContent = textarea.value;
     p.setAttribute("infos", JSON.stringify(infos));
@@ -546,9 +529,8 @@ window.onload = function(){
   let textarea = document.getElementById("textarea");
   textarea.addEventListener("input", autoResize);
 }
-window.unload = function(){
+window.beforeunload = function(){
   saveToLocal();
-  alert("saved");
 }
 function ConfirmBox(message){
   this.message = message;
@@ -557,44 +539,16 @@ function ConfirmBox(message){
     let div = document.createElement("div");
     div.innerHTML = `<p>${this.message}</p>
     <div id="confirmBtns">
-      <p onclick="${callback}">ok</p>
-      <p onclick="cancBox()">cancel</p>
+      <p id="confirmBtn1" onclick="${callback}">ok</p>
+      <p id="confirmBtn2" onclick="cancBox()">cancel</p>
     </div>`;
     div.id = "confirmBox";
     div.style.height = "auto";
     document.body.appendChild(div);
     div = document.getElementById("confirmBox");
-    let height = document.body.scrollHeight;
+    let height = window.screen.availHeight;
     let divHeight = window.getComputedStyle(div).getPropertyValue("height");
-    /*let width = document.body.scrollWidth;
-    let divWidth = window.getComputedStyle(div).getPropertyValue("width");*/
-    // define styles for confirmBox.
-    div.style.zIndex = 4;
-    div.style.position = "fixed";
-    div.style.top = `${(height - div.offsetHeight) / 2}px`;
-    /*div.style.left = `${(width - Number(divWidth.replace(/px/g, ""))) / 2}px`;
-    div.style.display = "flex";
-    div.style.flexDirection = "column";
-    div.style.justifyContent = "center";
-    div.style.maxWidth = "60vw";
-    div.style.color = "#000";
-    div.style.fontSize = "5vw";
-    div.style.background = "#fff";
-    div.style.padding = "5vw";
-    div.style.borderRadius = "10%";
-    div.children[0].style.alignItems = "none";*/
-    let buttons = document.getElementById("confirmBtns");
-    buttons.style.marginTop = "3vw";
-    buttons.style.display = "flex";
-    buttons.style.flexDirection = "row";
-    buttons.style.justifyContent = "space-between";
-    buttons = buttons.children;
-    buttons[0].style.padding = "3vw";
-    buttons[0].style.background = "#f22";
-    buttons[0].style.borderRadius = "10%";
-    buttons[1].style.padding = "3vw";
-    buttons[1].style.background = "#5e5";
-    buttons[1].style.borderRadius = "10%";
+    div.style.top = `${(height - div.innerHeight) / 2}px`;
     document.getElementById("trans").addEventListener("click", cancBox);
   }
 }
@@ -775,6 +729,7 @@ function saveToLocal(){
 function load(data){
   let categories = document.getElementById("category");
   categories.innerHTML = "";
+  //load categories
   for(categoryContent of data.categories){
     let category = document.createElement("div");
     category.className = "clickables category";
@@ -803,7 +758,56 @@ function load(data){
   categoryAdder.addEventListener("click", addCategory);
   categoryAdder.innerHTML = "+";
   categories.appendChild(categoryAdder);
-  //data loading
+  //load notes.
+  let notes = document.getElementById("notes");
+  notes.innerHTML = "";
+  for (id in data.notes){
+    let infos = data.notes[id];
+    let content = infos.content;
+    let parent = document.createElement("div");
+    parent.className = "parent";
+    let aNote = document.createElement("div");
+    aNote.id = id;
+    aNote.className = "aNote";
+    aNote.addEventListener("touchmove", slideDelete);
+    aNote.addEventListener("touchend", rePos);
+    let categoryColor = document.createElement("div");
+    categoryColor.className = "categoryColor";
+    categoryColor.innerHTML = "&nbsp;";
+    categoryColor.style.background = generateColor(infos.category);
+    aNote.appendChild(categoryColor);
+    let container = document.createElement("div");
+    container.className = "container";
+    let p = document.createElement("p");
+    p.setAttribute("infos", JSON.stringify(infos));
+    p.addEventListener("click", read);
+    p.innerHTML = content;
+    container.appendChild(p);
+    let editPen = document.createElement("img");
+    editPen.src = "edit.png";
+    editPen.alt = "edit";
+    editPen.className = "clickables editPen";
+    editPen.addEventListener("click", editOld);
+    editPen.style.width = "10vw";
+    container.appendChild(editPen);
+    let noteDelete = document.createElement("img");
+    noteDelete.src = "delete.png";
+    noteDelete.alt = "delete";
+    noteDelete.className = "clickables delete";
+    noteDelete.addEventListener("click", deleteNote);
+    container.appendChild(noteDelete);
+    aNote.appendChild(container);
+    let time = document.createElement("div");
+    time.className = "time";
+    time.innerHTML = arrangeDate(infos.time);
+    aNote.appendChild(time);
+    parent.appendChild(aNote);
+    let warning = document.createElement("div");
+    warning.className = "warning";
+    warning.setAttribute("role", "delete warning");
+    parent.appendChild(warning);
+    notes.appendChild(parent);
+  }
 }
 let use12Hours;
 let lastSort;
@@ -818,7 +822,7 @@ if(localStorage.getItem("data")){
 }else{
   lastSort = "category";
   use12Hours = true;
-  data = {sortOrder: "time", categories: ["Work", "Study"], use12Hours: true, Notes:{}};
+  data = {sortOrder: "time", lastCategory: "Uncategorized", categories: ["Work", "Study"], use12Hours: true, notes:{}};
   localStorage.setItem("data", JSON.stringify(data));
 }
 
