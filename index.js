@@ -547,8 +547,7 @@ function ConfirmBox(message){
     document.body.appendChild(div);
     div = document.getElementById("confirmBox");
     let height = window.screen.availHeight;
-    let divHeight = window.getComputedStyle(div).getPropertyValue("height");
-    div.style.top = `${(height - div.innerHeight) / 2}px`;
+    div.style.top = `${(height - div.scrollHeight) / 2}px`;
     document.getElementById("trans").addEventListener("click", cancBox);
   }
 }
