@@ -132,6 +132,8 @@ nav{
   justify-content: left;
   align-items: center;
   margin-left: 2vw;
+  cursor: default;
+  user-select: none;
 }
 main{
   margin-top: 5em;
@@ -210,7 +212,8 @@ main{
 }
 
 #addCategory{
-  font-size: 15vw;
+  font-size: 1.7em;
+  height: 1.8em;
 }
 #deleteEdit{
   position: fixed;
@@ -250,7 +253,6 @@ main{
   height: 6em;
   margin: 0;
   color: #409f93;
-  background: #409f93;
   user-select: none;
 }
 .container{
@@ -271,7 +273,7 @@ main{
   position: relative;
   overflow: hidden;
   flex: 9;
-  margin: 0 2vw;
+  padding: auto 2vw;
   width: 70vw;
   height: 1em;
 }
@@ -281,11 +283,9 @@ main{
 }
 .delete{
   height: 2em;
-  width: 2em;
 }
 .editPen{
   height: 2em;
-  width: 2em;
 }
 .time{
   position: absolute;
@@ -296,6 +296,7 @@ main{
   letter-spacing: 0.1vw;
 }
 #addBtn{
+  z-index: 2;
   color: #fff;
   position: fixed;
   right: 1px;
@@ -309,7 +310,8 @@ main{
   height: 20vh;
   border: 2px solid #fff;
   border-radius: 50%;
-  
+  cursor: pointer;
+  user-select: none;
 }
 #message{
   visibility: hidden;

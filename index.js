@@ -729,7 +729,7 @@ function saveToLocal(){
       data.notes[id] = infos;
     }
   }
-  localStorage.setItem("data", JSON.stringify(data));
+  localStorage.setItem("noteData", JSON.stringify(data));
 }
 
 function load(data){
@@ -817,8 +817,8 @@ function load(data){
 }
 let use12Hours;
 let lastSort;
-if(localStorage.getItem("data")){
-  let data = JSON.parse(localStorage.getItem("data"));
+if(localStorage.getItem("noteData")){
+  let data = JSON.parse(localStorage.getItem("noteData"));
   if(data.lastCategory == undefined || data.lastCategory == null){
     data.lastCategory = "Uncategorized";
   }
@@ -826,10 +826,9 @@ if(localStorage.getItem("data")){
   lastSort = data.sortOrder;
   load(data);
 }else{
-  lastSort = "category";
-  use12Hours = true;
-  data = {sortOrder: "time", lastCategory: "Uncategorized", categories: ["Work", "Study"], use12Hours: true, notes:{}};
-  localStorage.setItem("data", JSON.stringify(data));
+  saveToLocal();
 }
 
 changeCategoryColor();
+let adate = new Date(1663419333203).getMinutes();
+console.log(adate)
