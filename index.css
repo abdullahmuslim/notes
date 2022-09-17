@@ -107,7 +107,9 @@ nav{
 #navBtn2{
   position: relative;
   flex: 1;
-  right: 0;
+  display: flex;
+  justify-content: right;
+  margin-right: 2vw;
 }
 #navBtn1{
   flex: 1;
@@ -116,6 +118,7 @@ nav{
 }
 #navBtn2 svg:nth-child(2){
   display: none;
+  
 }
 #navBtn1 svg, #navBtn2 svg{
   height: 4em;
@@ -123,8 +126,12 @@ nav{
 }
 #navTxt{
   font-family: Sans-Serif;
-  font-size: 10vw;
+  font-size: 3em;
   flex: 2;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-left: 2vw;
 }
 main{
   margin-top: 5em;
@@ -156,7 +163,7 @@ main{
 #edit textarea{
   z-index: 1;
   margin-bottom: 12vw;
-  font-size: 7vw;
+  font-size: 1.2em;
   font-family: serif;
   word-spacing: .2em;
   line-height: 1.5em;
@@ -184,6 +191,7 @@ main{
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: 4em;
 }
 .category svg{
   width: 4em;

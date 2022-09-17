@@ -128,6 +128,7 @@ function read(event){
   let navBtn2 = document.getElementById("navBtn2");
   let navTxt = document.getElementById("navTxt");
   navTxt.innerHTML = "Reading";
+  navTxt.style.justifyContent = "center";
   navBtn1.style.display = "flex";
   navBtn1 = navBtn1.children;
   navBtn2 = navBtn2.children;
@@ -154,6 +155,7 @@ function back(){
   let navBtn2 = document.getElementById("navBtn2");
   let navTxt = document.getElementById("navTxt");
   navTxt.innerHTML = "Notes";
+  navTxt.style.justifyContent = "left";
   navBtn1.style.display = "none";
   navBtn1 = navBtn1.children;
   navBtn2 = navBtn2.children;
@@ -178,6 +180,7 @@ function editOld(event){
   let navBtn2 = document.getElementById("navBtn2");
   let navTxt = document.getElementById("navTxt");
   navTxt.innerHTML = "Editing";
+  navTxt.style.justifyContent = "center";
   navBtn1.style.display = "flex";
   navBtn1 = navBtn1.children;
   navBtn2 = navBtn2.children;
@@ -200,6 +203,7 @@ function add(){
   let navBtn2 = document.getElementById("navBtn2");
   let navTxt = document.getElementById("navTxt");
   navTxt.innerHTML = "Editing";
+  navTxt.style.justifyContent = "center";
   navBtn1.style.display = "flex";
   navBtn1 = navBtn1.children;
   navBtn2 = navBtn2.children;
@@ -224,6 +228,7 @@ function cancEdit(){
   let navBtn2 = document.getElementById("navBtn2");
   let navTxt = document.getElementById("navTxt");
   navTxt.innerHTML = "Notes";
+  navTxt.style.justifyContent = "left";
   navBtn1.style.display = "none";
   navBtn1 = navBtn1.children;
   navBtn2 = navBtn2.children;
@@ -246,7 +251,7 @@ function openCategory(){
   }
   let category = document.getElementById("category");
   category.style.width = "60vw";
-  category.style.fontSize = "6vw";
+  category.style.fontSize = "1.2em";
   category.style.height = "auto";
 }
 function closeCategory(){
@@ -264,9 +269,10 @@ function closeCategory(){
   }
   let category = document.getElementById("category");
   category.style.width = "40vw";
-  category.style.fontSize = "4vw";
-  category.style.height = "10vw";
+  category.style.fontSize = "0.9em";
+  category.style.height = "3em";
 }
+
 function autoResize() {
   this.style.height = 'auto';
   this.style.height = this.scrollHeight + 'px';
@@ -547,7 +553,8 @@ function ConfirmBox(message){
     document.body.appendChild(div);
     div = document.getElementById("confirmBox");
     let height = window.screen.availHeight;
-    div.style.top = `${(height - div.scrollHeight) / 2}px`;
+    let divHeight = window.getComputedStyle(div).getPropertyValue("height");
+    div.style.top = `${(height - div.innerHeight) / 2}px`;
     document.getElementById("trans").addEventListener("click", cancBox);
   }
 }
